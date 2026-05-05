@@ -1,6 +1,9 @@
 #include "parser.hpp"
 #include "mergesort.hpp"
 #include "binary_search.hpp"
+#include "parser.hpp"
+#include "graph.hpp"
+#include "kruskal.hpp"
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -26,6 +29,35 @@ void writeSortedRequests(const std::vector<Request>& arr, const std::string& fil
             << req.TotalCharges << ","
             << (req.Churn ? "Yes" : "No") << "\n";
     }
+    out.close();
+}
+
+
+
+void writeMST(const std::vector<Edge>& mst, const std::string& filename) {
+    std::ofstream out(filename);
+    if (!out.is_open()) {
+        std::cerr << "Error al abrir el archivo: " << filename << std::endl;
+        return;
+    }
+
+    double totalWeight = 0;
+
+    out << "--- MST (Kruskal) ---\n";
+    out << "Arista (u - v) : peso\n";
+    out << "---------------------------\n";
+
+    for (const auto& e : mst) {
+        out << e.u << " - " << e.v << " : " 
+            << std::fixed << std::setprecision(2) 
+            << e.weight << "\n";
+        totalWeight += e.weight;
+    }
+
+    out << "\nPeso total del MST: " 
+        << std::fixed << std::setprecision(2) 
+        << totalWeight << "\n";
+
     out.close();
 }
 
@@ -115,6 +147,39 @@ int main(int argc, char* argv[]) {
     std::cout << "\nArchivos generados:" << std::endl;
     std::cout << "- results/solicitudes_ordenadas.csv" << std::endl;
     std::cout << "- results/busquedas_A.txt" << std::endl;
+
+    // -------------------- MODULO B --------------------
+    std::cout << "\n--- Modulo B: MST con Kruskal ---" << std::endl;
+
+    // 1. Construcción del grafo
+    std::vector<Edge> edges = construirGrafo(allRequests);
+
+    std::cout << "Numero de nodos: 20" << std::endl;
+    std::cout << "Numero de aristas: " << edges.size() << std::endl;
+
+    // Calcular costo promedio de aristas
+    double sumaCostos = 0;
+    for (const auto& e : edges) {
+        sumaCostos += e.weight;
+    }
+    double promedioCosto = sumaCostos / edges.size();
+
+    std::cout << "Costo promedio de arista: "
+              << std::fixed << std::setprecision(2)
+              << promedioCosto << std::endl;
+
+    // 2. Crear grafo
+    Graph g(20);
+    g.edges = edges;
+
+    // 3. Ejecutar Kruskal
+    std::vector<Edge> mst = kruskal(g);
+
+    // 4. Guardar resultado
+    writeMST(mst, "results/mst_red.txt");
+
+    std::cout << "Archivo generado: results/mst_red.txt" << std::endl;
+
 
     return 0;
 }
