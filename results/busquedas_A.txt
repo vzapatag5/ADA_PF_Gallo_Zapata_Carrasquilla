@@ -1,0 +1,8 @@
+--- Resultados de Busqueda Binaria Recursiva ---
+Consulta	Valor k		customerID
+------------------------------------------------
+Q_A01		72		6904-JLBGY
+Q_A02		60		7426-WEIJX
+Q_A03		45		7925-PNRGI
+Q_A04		30		2684-EIWEO
+Q_A05		12		7450-NWRTR
