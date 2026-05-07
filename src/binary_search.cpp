@@ -1,5 +1,9 @@
 #include "binary_search.hpp"
 
+// Búsqueda binaria recursiva en arreglo ordenado DESCENDENTEMENTE por tenure.
+// Retorna el índice de cualquier registro con tenure == k, o -1 si no existe.
+// Corrección aplicada per aclaración docente (07/05/2026):
+// Si hay múltiples registros con el mismo tenure, es válido retornar cualquiera.
 int recursiveBinarySearch(const std::vector<Request>& arr, int low, int high, int k) {
     if (low > high) {
         return -1; // No encontrado
@@ -8,22 +12,16 @@ int recursiveBinarySearch(const std::vector<Request>& arr, int low, int high, in
     int mid = low + (high - low) / 2;
 
     if (arr[mid].tenure == k) {
-        // Encontramos una solicitud con tenure = k.
-        // Como nos piden localizar "la primera solicitud" y puede haber duplicados,
-        // debemos buscar a la izquierda (menor índice) para ver si hay una aparición anterior.
-        int first_occurrence = recursiveBinarySearch(arr, low, mid - 1, k);
-        if (first_occurrence != -1) {
-            return first_occurrence;
-        } else {
-            return mid;
-        }
+        // Encontramos un registro con tenure exactamente igual a k.
+        // Retornamos este índice directamente (cualquier ocurrencia es válida).
+        return mid;
     }
     // Dado que el arreglo está en orden DESCENDENTE:
-    // Si el valor en mid es menor que k, k debe estar en la mitad izquierda (índices menores)
+    // Si arr[mid].tenure < k, entonces k está en la mitad izquierda (valores mayores).
     else if (arr[mid].tenure < k) {
         return recursiveBinarySearch(arr, low, mid - 1, k);
     }
-    // Si el valor en mid es mayor que k, k debe estar en la mitad derecha (índices mayores)
+    // Si arr[mid].tenure > k, entonces k está en la mitad derecha (valores menores).
     else {
         return recursiveBinarySearch(arr, mid + 1, high, k);
     }
