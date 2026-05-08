@@ -4,6 +4,7 @@
 #include "parser.hpp"
 #include "graph.hpp"
 #include "kruskal.hpp"
+#include "knapsack.hpp"
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -148,7 +149,6 @@ int main(int argc, char* argv[]) {
     std::cout << "- results/solicitudes_ordenadas.csv" << std::endl;
     std::cout << "- results/busquedas_A.txt" << std::endl;
 
-    // -------------------- MODULO B --------------------
     std::cout << "\n--- Modulo B: MST con Kruskal ---" << std::endl;
 
     // 1. Construcción del grafo
@@ -180,6 +180,12 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Archivo generado: results/mst_red.txt" << std::endl;
 
+    std::cout << "\n--- Modulo C: Asignacion de Ancho de Banda (Knapsack) ---" << std::endl;
+    std::vector<Request> top50 = getTop50Active(allRequests);
+    KnapsackResult kResult       = solveKnapsack(top50, KNAPSACK_CAPACITY);
+    CounterexampleData ce;
+    bool ceFound = findCounterexample(top50, ce);
+    writeKnapsackOutput(kResult, top50, ce, ceFound, "results/asignacion_bw.txt");
 
     return 0;
 }

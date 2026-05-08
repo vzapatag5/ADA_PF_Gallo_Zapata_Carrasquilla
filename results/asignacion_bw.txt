@@ -1,0 +1,96 @@
+============================================================
+  MODULO C: ASIGNACION DE ANCHO DE BANDA
+  Programacion Dinamica - Mochila 0-1
+============================================================
+
+Capacidad total del nodo concentrador : 500 unidades
+Solicitudes activas evaluadas         : 50
+
+------------------------------------------------------------
+  SOLUCION OPTIMA
+------------------------------------------------------------
+
+Valor optimo total   : 0 centavos
+Peso total utilizado : 0 / 500 unidades
+Solicitudes elegidas : 0
+
+
+Ninguna solicitud fue seleccionada.
+Razon: el peso minimo entre las 50 solicitudes es 1363 unidades,
+       lo cual supera la capacidad de 500 unidades.
+
+Esto ocurre porque las solicitudes con mayor tenure acumulan
+muchos cargos totales (TotalCharges), superando ampliamente
+la capacidad del nodo. El algoritmo es correcto:
+dp[n][500] = 0 porque ningun item tiene peso <= 500.
+
+Los 5 items de menor peso del conjunto (todos > 500):
+  CustomerID        Peso      Valor     Tenure
+  ------------------------------------------------
+  2848-YXSMW        1363      194       72
+  7606-BPHHN        1469      198       72
+  7083-MIOPC        1567      203       72
+  4312-KFRXN        1711      254       72
+  6734-PSBAW        1724      236       72
+
+------------------------------------------------------------
+  CONTRAEJEMPLO: FALLO DEL ENFOQUE CODICIOSO
+------------------------------------------------------------
+
+Tomamos 3 solicitudes reales del conjunto anterior:
+
+  CustomerID        Peso      Valor     Ratio v/w
+  --------------------------------------------------
+  5248-YGIJN        6369      903       0.1418
+  6234-RAAPL        7252      999       0.1378
+  5954-BDFSG        7854      1075      0.1369
+
+Capacidad del contraejemplo: 7252 unidades
+
+Enfoque              | Solicitudes seleccionadas          | Valor | Optimo?
+---------------------|---------------------------------------|-------|--------
+Codicioso (ratio v/w)| 5248-YGIJN                            | 903   | No
+PD (Mochila 0-1)     | 6234-RAAPL                            | 999   | Si
+
+Explicacion:
+  El codicioso selecciona primero el item con mayor ratio v/w.
+  Pero eso no garantiza el optimo: puede haber otro item (o conjunto)
+  que quepa en la mochila y tenga mayor valor absoluto.
+  La PD evalua todas las combinaciones posibles y siempre
+  encuentra el valor maximo real.
+
+------------------------------------------------------------
+  ANALISIS DE COMPLEJIDAD
+------------------------------------------------------------
+
+Parametros:
+  n = 50  (numero de solicitudes)
+  W = 500  (capacidad de la mochila)
+
+Complejidad temporal: Theta(n * W)
+  = Theta(50 * 500)
+  = Theta(25000) operaciones
+
+  Por que? Tenemos dos ciclos anidados:
+    - El ciclo externo recorre los n items
+    - El ciclo interno recorre las W+1 capacidades
+  En cada celda hacemos O(1) trabajo -> total Theta(n * W)
+
+Complejidad espacial: Theta(n * W)
+  La tabla dp tiene (n+1) x (W+1) celdas
+  = (51) x (501) = 25551 enteros
+
+Pseudopolinomialidad:
+  El algoritmo es Theta(n * W), pero W no depende de n.
+  Si W fuera exponencial en n (por ejemplo W = 2^n),
+  el algoritmo seria exponencial tambien.
+  Por eso no es polinomial en sentido estricto:
+  es polinomial en el VALOR de W, pero no en su representacion
+  en bits (log W bits). A esto se le llama pseudopolinomial.
+
+  En la practica, con n = 50 y W = 500, el algoritmo
+  es muy eficiente y facil de implementar.
+
+============================================================
+  Fin del reporte - Modulo C
+============================================================
