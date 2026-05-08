@@ -84,8 +84,41 @@ int main(int argc, char* argv[]) {
         std::cerr << "No se pudieron cargar datos del CSV." << std::endl;
         return 1;
     }
-    
-    std::cout << "--- Modulo A: Parseo ---" << std::endl;
+
+        std::cout << "\n--- Modulo B: MST con Kruskal ---" << std::endl;
+
+    // 1. Construcción del grafo
+    std::vector<Edge> edges = construirGrafo(allRequests);
+
+    std::cout << "\nNumero de nodos: 20" << std::endl;
+    std::cout << "Numero de aristas: " << edges.size() << std::endl;
+
+    // Calcular costo promedio de aristas
+    double sumaCostos = 0;
+    for (const auto& e : edges) {
+        sumaCostos += e.weight;
+    }
+    double promedioCosto = sumaCostos / edges.size();
+
+    std::cout << "Costo promedio de arista: "
+              << std::fixed << std::setprecision(2)
+              << promedioCosto << std::endl;
+
+    // 2. Crear grafo
+    Graph g(20);
+    g.edges = edges;
+
+    // 3. Ejecutar Kruskal
+    std::vector<Edge> mst = kruskal(g);
+
+    std::cout << "Total de registros cargados: " << allRequests.size() << std::endl;
+
+    // 4. Guardar resultado
+    writeMST(mst, "results/mst_red.txt");
+
+    std::cout << "Archivo generado: results/mst_red.txt" << std::endl;
+
+    std::cout << "\n--- Modulo A: Parseo ---" << std::endl;
     std::cout << "Total de registros cargados: " << totalRecords << std::endl;
     std::cout << "Registros con TotalCharges nulo (tenure=0): " << nullTotalChargesCount << std::endl;
 
@@ -148,37 +181,6 @@ int main(int argc, char* argv[]) {
     std::cout << "\nArchivos generados:" << std::endl;
     std::cout << "- results/solicitudes_ordenadas.csv" << std::endl;
     std::cout << "- results/busquedas_A.txt" << std::endl;
-
-    std::cout << "\n--- Modulo B: MST con Kruskal ---" << std::endl;
-
-    // 1. Construcción del grafo
-    std::vector<Edge> edges = construirGrafo(allRequests);
-
-    std::cout << "Numero de nodos: 20" << std::endl;
-    std::cout << "Numero de aristas: " << edges.size() << std::endl;
-
-    // Calcular costo promedio de aristas
-    double sumaCostos = 0;
-    for (const auto& e : edges) {
-        sumaCostos += e.weight;
-    }
-    double promedioCosto = sumaCostos / edges.size();
-
-    std::cout << "Costo promedio de arista: "
-              << std::fixed << std::setprecision(2)
-              << promedioCosto << std::endl;
-
-    // 2. Crear grafo
-    Graph g(20);
-    g.edges = edges;
-
-    // 3. Ejecutar Kruskal
-    std::vector<Edge> mst = kruskal(g);
-
-    // 4. Guardar resultado
-    writeMST(mst, "results/mst_red.txt");
-
-    std::cout << "Archivo generado: results/mst_red.txt" << std::endl;
 
     std::cout << "\n--- Modulo C: Asignacion de Ancho de Banda (Knapsack) ---" << std::endl;
     std::vector<Request> top50 = getTop50Active(allRequests);

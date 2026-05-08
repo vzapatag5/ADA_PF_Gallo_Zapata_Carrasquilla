@@ -20,8 +20,15 @@ std::vector<Edge> construirGrafo(const std::vector<Request>& requests) {
 
     std::vector<double> suma(N, 0.0); // (2) para acumular la suma de MonthlyCharges por grupo
     std::vector<int> conteo(N, 0); // (3) para contar el número de solicitudes por grupo
-    
 
+    // -------------------- AGRUPAMIENTO --------------------
+    for (int i = 0; i < requests.size(); i++) {
+
+        int grupo = i % N;
+
+        suma[grupo] += requests[i].MonthlyCharges;
+        conteo[grupo]++;
+    }
     // -------------------- PROMEDIOS --------------------
 
     std::vector<double> promedio(N);
@@ -31,6 +38,13 @@ std::vector<Edge> construirGrafo(const std::vector<Request>& requests) {
             promedio[i] = suma[i] / conteo[i]; // (5) calcular el promedio de MonthlyCharges para cada grupo
         else
             promedio[i] = 0.0; // (6) si no hay solicitudes en el grupo, el promedio se establece en 0 para evitar división por cero
+    }
+
+    for (int i = 0; i < 5; i++) {
+    std::cout << "Grupo " << i
+              << " promedio = "
+              << promedio[i]
+              << std::endl;
     }
 
     // -------------------- ARISTAS --------------------
